@@ -1,0 +1,38 @@
+--- 
+kind: ConfigMap
+apiVersion: v1 
+metadata:
+  name: my-configmap
+
+data:
+  message: "Hello this is configmap example"
+
+
+---
+kind: Pod 
+apiVersion: v1 
+metadata:
+  name: my-configmap-pod
+
+spec:
+  containers:
+    - name: demo-pod
+      image: alpine:latest
+      command: ["sleep","3600"]
+      # way: 1
+      # envFrom:
+      #   - configMapRef:
+      #       name: my-configmap
+
+      # way: 2
+      env: 
+        - name: CUSTOME_MESSAGE
+          valueFrom: 
+            configMapKeyRef:
+              name: my-configmap
+              key: message
+
+      imagePullPolicy: IfNotPresent  
+
+# go inside pod and run $ env 
+# youw ill get all env 

@@ -1,0 +1,31 @@
+--- 
+kind: ConfigMap
+apiVersion: v1 
+metadata:
+  name: my-configmap
+
+data:
+  message: "Hello this is configmap example"
+
+
+---
+kind: Pod 
+apiVersion: v1 
+metadata:
+  name: my-configmap-pod
+
+spec:
+  containers:
+    - name: demo-pod
+      image: alpine:latest
+      command: ["sleep","3600"]
+      
+      volumeMounts:
+        - name: configmap-volume
+          mountPath: "/etc/customdir"
+
+      imagePullPolicy: IfNotPresent  
+  volumes:
+  - name: configmap-volume
+    configMap:
+      name: my-configmap

@@ -1,0 +1,43 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.31.0
+    # if image pull erro comment this 
+    # this is to access application on port as they are running inside docker container so need to map ports
+    extraPortMappings:
+    - containerPort: 80
+      hostPort: 80
+      protocol: TCP
+    - containerPort: 443
+      hostPort: 443
+      protocol: TCP
+  - role: worker
+    image: kindest/node:v1.31.0
+  - role: worker
+    image: kindest/node:v1.31.0
+
+# kind create cluster --config kind-setup.yaml --name custom-kind-cluster
+# kind delete cluster --name custom-kind-cluster
+# kind get clusters
+
+
+
+# kubectl get nodes
+# kubectl cluster-info
+
+
+# To use local images
+# docker build -t my-app:latest .
+# kind load docker-image my-app:latest --name custom-kind-cluster
+# kubectl apply -f deployment.yaml
+# to see image in cluster is present or not
+# docker exec -it custom-kind-cluster crictl images | grep my-app
+
+
+# minikube
+# Create a multi-node minikube cluster
+# minikube start --nodes=3 --driver=docker --ports=80:80,443:443
+
+# minikube image load my-app:latest
+

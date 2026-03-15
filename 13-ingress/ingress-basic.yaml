@@ -1,0 +1,65 @@
+
+kind: Deployment 
+apiVersion: apps/v1
+
+metadata:
+  name: my-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: django-app
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: django-app
+
+    spec:
+      containers:
+      - name: django-app-container
+        image: hackerspider09/python-rolling-app:v1
+        imagePullPolicy: IfNotPresent  
+
+
+---
+kind: Service
+apiVersion: v1 
+metadata:
+  name: my-service
+
+spec:
+  selector:
+    app.kubernetes.io/name: django-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 5000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: myapp.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-service
+            port:
+              number: 80
+
+
+# instll ingress controller $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+# check for $ kubectl get pods -n ingress-nginx -- to be run
+# then run ingress file (at start ingress section may run as it need controller so 1st controller shoudl start)

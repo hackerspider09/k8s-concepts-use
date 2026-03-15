@@ -1,0 +1,46 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: app-pod
+spec:
+  containers:
+  - name: check-dir
+    image: busybox
+    command: ['sh', '-c', "cat /app/testDir/test.txt && sleep 3600"]
+    volumeMounts:
+    - name: shared-data
+      mountPath: /app/testDir
+
+  initContainers:
+  - name: create-dir
+    image: busybox
+    command: ['sh', '-c', "mkdir /testDir; echo 'Hello World!' >> /testDir/test.txt"]
+
+    volumeMounts:
+    - name: shared-data
+      mountPath: /testDir
+
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+
+
+# In the initContainer, the shared volume appears at /testDir.
+# → It writes /testDir/test.txt.
+
+# In the main container, the exact same shared volume appears at /app/testDir.
+# → That file is available at /app/testDir/test.txt.
+
+
+# Why different paths?
+
+# Because each container has its own filesystem namespace. The volume is injected (mounted) wherever you tell Kubernetes to place it.
+
+# You can choose to mount it at the same path (/testDir in both) or at different paths (like /testDir vs /app/testDir). Both are valid.
+
+# 🔑 Rule of thumb:
+
+# Same name: under volumeMounts = same storage.
+
+# mountPath = where that storage shows up inside that container’s filesystem.
+

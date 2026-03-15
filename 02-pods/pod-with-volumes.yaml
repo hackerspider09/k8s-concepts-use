@@ -1,0 +1,10 @@
+kind: Pod
+apiVersion: v1 
+
+metadata:
+  name: app-pod
+
+spec:
+  containers:
+  - name: django-app
+    containerPort: 8000
