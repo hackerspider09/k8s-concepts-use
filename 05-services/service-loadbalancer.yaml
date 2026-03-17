@@ -37,6 +37,6 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 5000
+      targetPort: 5000  #this is target port on which svc should route request
 
 # 
