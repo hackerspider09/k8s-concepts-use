@@ -40,4 +40,5 @@ spec:
       nodePort: 30080
 
 # from this method we can access application from one of the nodes ip and nodeport
-# 1. get ip of control/worker plan and use nodePort to access app
+# 1. get ip of control/worker plan and use nodePort to access app and curl in that machine it will work in same machine
+# and what i noticed nodeport means machines ip like that node on which cluster is running can try if wrong just check 
